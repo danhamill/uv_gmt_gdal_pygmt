@@ -1,0 +1,23 @@
+[project]
+name = "uv-gmt-gdal-pygmt"
+version = "0.1.0"
+description = "A uv-managed GDAL and PyGMT development environment"
+readme = "README.md"
+authors = [
+    { name = "danhamill", email = "hamill.daniel@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "gdal>=3.13.3",
+    "pygmt>=0.19.0",
+]
+
+[project.scripts]
+uv-gmt-gdal-pygmt = "uv_gmt_gdal_pygmt:main"
+
+[[tool.uv.index]]
+url = "https://gisidx.github.io/gwi"
+
+[build-system]
+requires = ["uv_build>=0.12.3,<0.13.0"]
+build-backend = "uv_build"

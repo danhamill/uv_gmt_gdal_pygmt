@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.windows": {
+        "GMT_LIBRARY_PATH": "${workspaceFolder}\\.gmt\\Library\\bin",
+        "PATH": "${workspaceFolder}\\.gmt\\Library\\bin;${workspaceFolder}\\.gmt\\Scripts;${env:PATH}"
+    }
+}
