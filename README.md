@@ -17,13 +17,14 @@ then ensure both commands are available on `PATH`.
 Open **Command Prompt (`cmd.exe`)** in the repository root and install GMT:
 
 ```cmd
-micromamba create --prefix .gmt --channel conda-forge gmt --yes
+micromamba create --prefix .\.gmt --channel conda-forge gmt --yes
 ```
 
 Then create/update the uv environment from either Command Prompt or PowerShell:
 
 ```console
 uv sync --locked
+uv run python scripts/install_gmt_startup.py
 ```
 
 The committed `.vscode/settings.json` exposes GMT to new VS Code integrated
@@ -33,7 +34,17 @@ terminals by configuring:
 - `PATH` to include `.gmt\Library\bin` and `.gmt\Scripts`
 
 After setup, **close existing terminals and open a new VS Code integrated
-terminal** so these environment variables take effect.
+terminal** so these environment variables take effect. In VS Code notebooks,
+select the `.venv` Python kernel and restart it after installing the startup
+hook.
+
+The second command installs a small `.pth` file into the generated `.venv`.
+Python reads that hook before Jupyter starts and imports the tracked
+`uv_gmt_gdal_pygmt.gmt_runtime` module. The module sets `GMT_LIBRARY_PATH`, adds
+the GMT DLL directory, and preloads `gmt.dll` before Jupyter loads native
+libraries. The generated `.pth` file is intentionally not committed; the
+installer script and runtime module are committed and recreate it on every
+computer.
 
 ## Verify the installation
 
@@ -53,6 +64,9 @@ Command Prompt:
 ```cmd
 rmdir /s /q .gmt
 rmdir /s /q .venv
-micromamba create --prefix .gmt --channel conda-forge gmt --yes
+micromamba create --prefix .\.gmt --channel conda-forge gmt --yes
 uv sync --locked
+uv run python scripts/install_gmt_startup.py
 ```
+
+Run the startup-hook installer again whenever `.venv` is deleted and recreated.
