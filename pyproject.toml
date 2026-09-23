@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "danhamill", email = "hamill.daniel@gmail.com" }
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "esmpy @ git+https://github.com/esmf-org/esmf.git@v8.4.2#subdirectory=src/addon/esmpy",
     "gdal>=3.13.3",

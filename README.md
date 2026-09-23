@@ -1,29 +1,31 @@
 # uv-gmt-gdal-pygmt
 
-This GDAL and PyGMT development environment uses two environment managers with
-separate responsibilities:
+This GDAL and PyGMT development environment combines a prebuilt native runtime
+with a uv-managed Python environment:
 
-- **Micromamba** installs the native GMT and ESMF runtimes and their DLL
-	dependencies into `.gmt`.
+- The native GMT and ESMF runtimes are downloaded from the
+	[`gmt_builder` v.0.3 release](https://github.com/danhamill/gmt_builder/releases/tag/v.0.3)
+	and extracted into `.gmt`.
 - **uv** creates `.venv` and installs Python packages, including PyGMT, GDAL,
 	and ESMPy.
 
 ## Prerequisites
 
-Install [uv](https://docs.astral.sh/uv/) and
-[Micromamba](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html),
-then ensure both commands are available on `PATH`.
+Install [uv](https://docs.astral.sh/uv/) and ensure it is available on `PATH`.
 
 ## Windows setup
 
-Open **Command Prompt (`cmd.exe`)** in the repository root and install the
-native runtimes. Install `esmf`, not `esmpy`, with Micromamba:
+Open a terminal in the repository root and download the native runtime:
 
-```cmd
-micromamba create --prefix .\.gmt --channel conda-forge gmt esmf=8.4.2 --yes
+```console
+uv run --no-project python scripts/install_gmt_runtime.py
 ```
 
-Then create/update the uv environment from either Command Prompt or PowerShell:
+The installer verifies the release asset's SHA-256 checksum and extracts its
+contents into `.gmt`. It leaves an existing installation unchanged; pass
+`--force` to replace it.
+
+Then create or update the uv environment:
 
 ```console
 uv sync --locked
@@ -52,8 +54,8 @@ patched files under `.venv` are intentionally not committed; the installer and
 runtime module are committed and recreate them on every computer.
 
 ESMPy is not available from PyPI. `pyproject.toml` therefore installs ESMPy
-8.4.2 with uv from the matching ESMF Git tag. Keep the Micromamba `esmf=8.4.2`
-pin and the uv ESMPy Git tag synchronized.
+8.4.2 with uv from the matching ESMF Git tag. The release archive also contains
+ESMF 8.4.2; keep these versions synchronized when updating the runtime asset.
 
 ## Verify the installation
 
@@ -67,13 +69,10 @@ command is running in a newly opened VS Code integrated terminal.
 
 ## Rebuilding the environment
 
-Both generated environments are ignored by Git. To recreate them, first use
-Command Prompt:
+Both generated environments are ignored by Git. To recreate them:
 
-```cmd
-rmdir /s /q .gmt
-rmdir /s /q .venv
-micromamba create --prefix .\.gmt --channel conda-forge gmt esmf=8.4.2 --yes
+```console
+uv run --no-project python scripts/install_gmt_runtime.py --force
 uv sync --locked
 uv run python scripts/install_gmt_startup.py
 ```

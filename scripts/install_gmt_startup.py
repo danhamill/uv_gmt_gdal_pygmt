@@ -6,7 +6,6 @@ import sys
 import sysconfig
 from pathlib import Path
 
-
 HOOK_NAME = "zz_uv_gmt_gdal_pygmt.pth"
 HOOK_CONTENT = "import uv_gmt_gdal_pygmt.gmt_runtime\n"
 
@@ -39,8 +38,15 @@ def patch_esmpy_for_windows(site_packages: Path) -> None:
         loader_text = loader_text.replace(
             "    else:\n        _ESMF = ct.CDLL(os.path.join(libsdir,'libesmf_fullylinked.so'),",
             "    elif constants._ESMF_OS == constants._ESMF_OS_WIN:\n"
-            "        _ESMF = np.ctypeslib.load_library('esmf_fullylinked', libsdir)\n"
+            "        _ESMF = np.ctypeslib.load_library(\n"
+            "            'esmf_fullylinked', os.path.dirname(esmfmk))\n"
             "    else:\n        _ESMF = ct.CDLL(os.path.join(libsdir,'libesmf_fullylinked.so'),",
+        )
+    else:
+        loader_text = loader_text.replace(
+            "_ESMF = np.ctypeslib.load_library('esmf_fullylinked', libsdir)",
+            "_ESMF = np.ctypeslib.load_library(\n"
+            "            'esmf_fullylinked', os.path.dirname(esmfmk))",
         )
     loader.write_text(loader_text, encoding="utf-8")
     print(f"Patched ESMPy Windows loader: {loader}")

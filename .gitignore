@@ -11,3 +11,5 @@ wheels/
 .gmt/
 .gmt-conda/
 .gmt-incomplete/
+
+.ruff_cache/
