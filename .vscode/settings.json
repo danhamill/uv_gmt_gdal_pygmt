@@ -1,6 +1,6 @@
 {
     "terminal.integrated.env.windows": {
         "GMT_LIBRARY_PATH": "${workspaceFolder}\\.gmt\\Library\\bin",
-        "PATH": "${workspaceFolder}\\.gmt\\Library\\bin;${workspaceFolder}\\.gmt\\Scripts;${env:PATH}"
+        "PATH": "${workspaceFolder}\\.gmt;${workspaceFolder}\\.gmt\\Library\\mingw-w64\\bin;${workspaceFolder}\\.gmt\\Library\\usr\\bin;${workspaceFolder}\\.gmt\\Library\\bin;${workspaceFolder}\\.gmt\\Scripts;${workspaceFolder}\\.gmt\\bin;${env:PATH}"
     }
 }
