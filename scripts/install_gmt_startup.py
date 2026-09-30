@@ -6,8 +6,29 @@ import sys
 import sysconfig
 from pathlib import Path
 
-HOOK_NAME = "zz_uv_gmt_gdal_pygmt.pth"
-HOOK_CONTENT = "import uv_gmt_gdal_pygmt.gmt_runtime\n"
+HOOK_NAME = "zz_runtime_startup.pth"
+
+
+def discover_runtime_import(project_root: Path) -> str:
+    """Find the package containing gmt_runtime.py and return its import statement."""
+    src_dir = project_root / "src"
+
+    if not src_dir.is_dir():
+        raise SystemExit(f"Source directory does not exist: {src_dir}")
+
+    candidates = [
+        package.name
+        for package in src_dir.iterdir()
+        if package.is_dir() and (package / "gmt_runtime.py").is_file()
+    ]
+
+    if len(candidates) != 1:
+        raise SystemExit(
+            f"Expected exactly one package containing gmt_runtime.py under {src_dir}; "
+            f"found: {candidates}"
+        )
+
+    return f"import {candidates[0]}.gmt_runtime\n"
 
 
 def patch_esmpy_for_windows(site_packages: Path) -> None:
@@ -63,7 +84,10 @@ def main() -> None:
 
     site_packages = Path(sysconfig.get_path("purelib"))
     hook = site_packages / HOOK_NAME
-    hook.write_text(HOOK_CONTENT, encoding="utf-8")
+    hook.write_text(
+        discover_runtime_import(project_root),
+        encoding="utf-8",
+    )
     print(f"Installed GMT startup hook: {hook}")
     patch_esmpy_for_windows(site_packages)
 
