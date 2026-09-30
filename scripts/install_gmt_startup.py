@@ -19,7 +19,9 @@ def discover_runtime_import(project_root: Path) -> str:
     candidates = [
         package.name
         for package in src_dir.iterdir()
-        if package.is_dir() and (package / "gmt_runtime.py").is_file()
+        if package.is_dir()
+        and (package / "gmt_runtime.py").is_file()
+        and (package / "__init__.py").is_file()
     ]
 
     if len(candidates) != 1:
